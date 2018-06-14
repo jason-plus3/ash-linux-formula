@@ -15,9 +15,13 @@
 #
 #################################################################
 VRFOPTS="--noscripts --nolinkto --nosize --nouser --nogroup --nomtime --nomode --nordev --nocaps"
-RPMFILES=$(rpm -Va ${VRFOPTS} | awk '$1 ~ /^..5/ && $2 != "c"' | \
-           sed 's/^.*[ 	]\//\//')
+# filter on having md5 change, NOT a config file, and NOT a placeholder in /var/log/ (e.g. /var/log/salt/minion)
+RPMFILES=$(rpm -Va ${VRFOPTS} | awk '$1 ~ /^..5/ && $2 != "c" && $NF !~ /^\/var\/log\// {print $NF;}' )
+# awk '$1 ~ /^..5/ && $2 != "c"' | sed 's/^.*[ 	]\//\//' | grep -v '^/var/log/')
 RPMARRAY=()
+
+echo "RPMFILES=${RPMFILES}"
+
 
 if [ "${RPMFILES}" == "" ]
 then
