@@ -11,10 +11,12 @@
 #    NIST SP 800-53A :: CM-6.1 (iv) 
 #    NIST SP 800-53 Revision 4 :: CM-6 b 
 #
-#################################################################
+
 {%- set stig_id = 'RHEL-07-040480' %}
 {%- set helperLoc = 'ash-linux/el7/STIGbyID/cat2/files' %}
 {%- set svcName = 'postfix' %}
+
+{%- if salt.service.available(svcName) %}
 {%- set cfgFile = '/etc/postfix/main.cf' %}
 {%- set parmName = 'smtpd_client_restrictions' %}
 {%- set pfxMain = salt.postfix.show_main() %}
@@ -97,3 +99,4 @@ service_{{ stig_id }}-{{ cfgFile }}:
   {%- endif %}
 {%- endfor %}
 #}
+{%- endif %} #if service.available(svcName) %}

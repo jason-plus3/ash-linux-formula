@@ -24,7 +24,7 @@ script_{{ stig_id }}-describe:
     - source: salt://{{ helperLoc }}/{{ stig_id }}.sh
     - cwd: /root
 
-{%- if salt.file.search(sshConfigFile, '^' + sshParm + ' .*') %}
+{%- if salt.file.search(sshConfigFile, '^' + sshParm + ' .*',ignore_if_missing=True) %}
   {%- if salt.file.search(sshConfigFile, '^' + sshParm + ' yes') %}
 file_{{ stig_id }}:
   cmd.run:

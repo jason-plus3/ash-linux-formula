@@ -19,7 +19,13 @@
 {%- set audCfg = '/etc/audit/auditd.conf' %}
 {%- set parmName = 'space_left'%}
 {%- set fullPct = 0.75 %}
-{%- set auditVol = '/var/log/audit' %}
+
+{%- if salt.file.file_exists('/var/log/audit') %}
+  {%- set auditVol = '/var/log/audit' %}
+{% else %}
+  {%- set auditVol = '/var/log' %}
+{% endif %}
+
 {%- set usageDict = salt.status.diskusage(auditVol) %}
 {%- set audSzMB = usageDict[auditVol]['total'] // 1024 // 1024 %}
 {%- set alrtFull = (( audSzMB * 0.75 )|int)|string %}
@@ -30,6 +36,8 @@ script_{{ stig_id }}-describe:
     - cwd: /root
 
 {%- if salt.file.file_exists(audCfg) %}
+# calculate values only after we confirm that we need to configure the audit volume
+
 file_{{ stig_id }}-{{ parmName }}:
   file.replace:
     - name: '{{ audCfg }}'

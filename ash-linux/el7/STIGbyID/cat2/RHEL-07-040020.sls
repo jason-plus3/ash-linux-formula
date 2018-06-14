@@ -29,7 +29,7 @@ script_{{ stig_id }}-describe:
     - source: salt://{{ helperLoc }}/{{ stig_id }}.sh
     - cwd: /root
 
-{%- if salt.file.search(cfgFile, srcPatAuth) %}
+{%- if salt.file.search(cfgFile, srcPatAuth, ignore_if_missing=True) %}
 file_{{ stig_id }}-authlog:
   file.replace:
     - name: '{{ cfgFile }}'
@@ -47,7 +47,7 @@ file_{{ stig_id }}-authlog:
     - append_if_not_found: True
 {%- endif %}
 
-{%- if salt.file.search(cfgFile, srcPatDmn) %}
+{%- if salt.file.search(cfgFile, srcPatDmn, ignore_if_missing=True) %}
 file_{{ stig_id }}-daemonlog:
   file.replace:
     - name: '{{ cfgFile }}'
